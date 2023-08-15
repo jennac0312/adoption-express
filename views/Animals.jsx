@@ -1,11 +1,14 @@
 import React from 'react'
 
-const Animals = ( { animal } ) => {
+const Animals = ( { type } ) => {
 
     const cats = () => {
         return (
           <div>
-            cats
+            <h1>CATS</h1>
+            <a href="/rehome/cat">
+                <button>Rehome A Cat</button>
+            </a>
           </div>
         )
     }
@@ -13,12 +16,15 @@ const Animals = ( { animal } ) => {
     const dogs = () => {
         return(
             <div>
-                dogs
+                <h1>DOGS</h1>
+                <a href="/rehome/dog">
+                    <button>Rehome A Dog</button>
+                </a>
             </div>
         )
     }
 
-    return animal === "cats" ? cats() : dogs()
+    return type === "cat" ? cats() : dogs()
 }
 
 export default Animals
