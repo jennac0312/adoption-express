@@ -24,9 +24,9 @@ const Animals = ( { type, animals } ) => {
                                 <form action={`/cats/${animal._id}?_method=DELETE`} method='POST'>
                                     <button>ADOPT ME!</button>
                                 </form>
-                                <form action={`cats/edit/${_id}?_method=PUT`} method="POST">
+                                <a href={`${type}s/edit/${animal._id}`}>
                                     <button>Edit</button>
-                                </form>
+                                </a>
                             </div>
                         </div>
                     )

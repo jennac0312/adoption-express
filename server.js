@@ -1,6 +1,7 @@
 const express = require("express")
 const app = express()
 const PORT = 3000
+const methodOverride = require("method-override")
 
 // ENV ( needed to access MONGO_URI variable )
 require("dotenv").config()
@@ -20,6 +21,8 @@ app.engine("jsx", require("express-react-views").createEngine())
 app.use(express.urlencoded({extended:false}));
 //  allow json
 app.use(express.json())
+
+app.use( methodOverride("_method") )
 
 // runs between all routes
 app.use((req, res, next) => {
@@ -66,8 +69,29 @@ app.get(`/cats/edit/:id`, async ( req, res ) => {
     let { id } = req.params
     
     let animal = await Cat.findById( id )
-
+    
     res.render("Edit", { type: 'cat', animal: animal })
+})
+app.delete( '/cats/:id', async ( req, res ) => {
+    let { id } = req.params
+
+    try {
+        await Cat.findByIdAndDelete( id )
+        res.redirect('/cats' )
+    } catch (error) {
+        res.status(500).send( error )
+    }
+})
+
+app.delete( '/dogs/:id', async ( req, res ) => {
+    let { id } = req.params
+    
+    try {
+        await Dog.findByIdAndDelete( id )
+        res.redirect('/dogs' )
+    } catch (error) {
+        res.status(500).send( error )
+    }
 })
 
 app.put('/cats/edit/:id', async ( req, res ) => {
@@ -76,8 +100,9 @@ app.put('/cats/edit/:id', async ( req, res ) => {
     let update = req.body
 
     try {
-        let updatedCat = await Cat.findByIdAndUpdate( id, update, { new: true })
-        res.status(200).json(updatedCat)
+        await Cat.findByIdAndUpdate( id, update, { new: true })
+        // res.status(200).json(updatedCat)
+        res.redirect('/cats')
         
     } catch (error) {
         res.status(500).json( { message: error.message } )
@@ -132,6 +157,7 @@ app.post('/rehome/dog', async ( req, res ) => {
         res.status(500).json( { message: error.message } )
     }  
 })
+
 
 // CONNECTION AND PORT
 mongoose.connect( MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
