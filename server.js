@@ -18,20 +18,42 @@ app.engine("jsx", require("express-react-views").createEngine())
 
 // view body of a post request
 app.use(express.urlencoded({extended:false}));
+//  allow json
+app.use(express.json())
+
+// runs between all routes
+app.use((req, res, next) => {
+    console.log('I run for all routes');
+    next();
+});
 
 
 
 
 // ROUTES
+// seed route
+app.get('/seed', async ( req, res ) => {
+    // deleting ALL current data... optional
+    await Cat.deleteMany({})
+    await Dog.deleteMany({})
+
+    // add all data
+    // await Pokemon.create() // what was i typing??
+
+    res.redirect('/')
+})
+
 app.get('/', ( req, res ) => {
     res.render("Home")
 })
 
-app.get('/cats', ( req, res ) => {
-    res.render("Animals", { type: 'cat' })
+app.get('/cats', async ( req, res ) => {
+    let allCats = await Cat.find({})
+    res.render("Animals", { type: 'cat', animals: allCats})
 })
-app.get('/dogs', ( req, res ) => {
-    res.render("Animals", { type: 'dog' })
+app.get('/dogs', async ( req, res ) => {
+    let allDogs = await Dog.find({})
+    res.render("Animals", { type: 'dog', animals: allDogs})
 })
 
 app.get('/rehome/:animal', ( req, res ) => {
@@ -39,9 +61,75 @@ app.get('/rehome/:animal', ( req, res ) => {
     res.render("Rehome", { type: animal })
 })
 
-app.post('/rehome/:animal', ( req, res ) => {
-    console.log(req.body)
-    res.send(req.body)
+app.get(`/cats/edit/:id`, async ( req, res ) => {
+    // res.send( req.params.id )
+    let { id } = req.params
+    
+    let animal = await Cat.findById( id )
+
+    res.render("Edit", { type: 'cat', animal: animal })
+})
+
+app.put('/cats/edit/:id', async ( req, res ) => {
+
+    let { id } = req.params
+    let update = req.body
+
+    try {
+        let updatedCat = await Cat.findByIdAndUpdate( id, update, { new: true })
+        res.status(200).json(updatedCat)
+        
+    } catch (error) {
+        res.status(500).json( { message: error.message } )
+    }
+    // res.send( updatedCat )
+})
+// app.post('/rehome/:animal', async ( req, res ) => {
+//     // console.log(req.body)
+//     // res.send(req.body)
+
+//     let { type } = req.params
+//     let newAnimal = req.body
+
+//     try {
+//         if( type === "cat" ){
+//             await Cat.create( newAnimal )
+//             // res.status(200).send(newAnimal)
+//             res.send(newAnimal)
+//         } else if( type === "dog" ){
+//             await Dog.create( newAnimal )
+//             res.send(newAnimal)
+//             // res.status(200).send(newAnimal)      
+//         }
+        
+//     } catch (error) {
+//         res.status(500).json( { message: error.message } )
+//     }
+// })
+
+app.post('/rehome/cat', async ( req, res ) => {
+    // console.log( req.body )
+    // res.send( req.body )
+
+    try {
+        const newCat = await Cat.create( req.body )
+        // res.status(200).json( newCat )
+        res.redirect( '/cats' )
+    } catch (error) {
+        res.status(500).json( { message: error.message } )
+    }  
+})
+
+app.post('/rehome/dog', async ( req, res ) => {
+    console.log( req.body )
+    res.send( req.body )
+
+    try {
+        const newDog = await Dog.create( req.body )
+        res.status(200).json( newDog )
+    } catch (error) {
+        res.status(500).json( { message: error.message } )
+    }  
 })
 
 // CONNECTION AND PORT

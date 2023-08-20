@@ -1,8 +1,8 @@
 import React from 'react'
 
-const Rehome = ( { type } ) => {
+const Rehome = ( { type, use } ) => {
 
-    const form = (type) => {
+    const form = ( type ) => {
         return(
             <form action={`/rehome/${type}`} method='POST'>
                 <label htmlFor="">NAME:</label>
@@ -24,29 +24,24 @@ const Rehome = ( { type } ) => {
                         <input type="text" name="breed"/> <br />
                 </>
                 }
-                <input type="submit" value={`Rehome`}/>
+                <a href={`/${type}s`}>
+                    <input type="submit" value={ use !== "edit" ? `Rehome` : 'Update'}/>
+                </a>
             </form>
         )
     }
 
-    const cat = () => {
-        return (
+    return (
           <div>
-            REHOME {type.toUpperCase()}
-            { form('cat') }
-          </div>
-        )
-    }
-    const dog = () => {
-        return (
-            <div>
-            REHOME {type.toUpperCase()}
-            { form('dog') }
-        </div>
-        )
-    }
+            <a href={`/${type}s`}>Return</a>
+            { use !== "edit" && 
+                <h1>REHOME {type.toUpperCase()}</h1>
+            }
 
-    return type === "cat" ? cat() : dog()
+            { form(type) }
+          </div>
+    )
+
 }
 
 export default Rehome
