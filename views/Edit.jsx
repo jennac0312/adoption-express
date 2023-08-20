@@ -4,7 +4,7 @@ const Edit = ( { animal, type } ) => {
   return (
     <div>
       <h1>Edit {animal.name}</h1>
-      <form action={`/rehome/${type}`} method='POST'>
+      <form action={`/${type}s/edit/${animal._id}?_method=PUT`} method='POST'>
                 <label htmlFor="">NAME:</label>
                     <input type="text" name="name" placeholder={animal.name} /> <br />
                 <label htmlFor="">AGE:</label>
