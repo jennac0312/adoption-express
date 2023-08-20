@@ -6,7 +6,7 @@ const Animals = ( { type, animals } ) => {
         <div>
         <a href="/">Return</a>
         <h1 style={{ textAlign: 'center' }}>MEET OUR {type.toUpperCase()}S</h1>
-        <a href="/rehome/cat" style={{ margin: 'auto' }}>
+        <a href={`/rehome/${type}`} style={{ margin: 'auto' }}>
             <button>Rehome a {type.toUpperCase()}</button>
         </a>
         <div className="animalContainer" style={{ border: '2px solid black' }}>

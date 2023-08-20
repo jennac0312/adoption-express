@@ -121,12 +121,13 @@ app.post('/rehome/cat', async ( req, res ) => {
 })
 
 app.post('/rehome/dog', async ( req, res ) => {
-    console.log( req.body )
-    res.send( req.body )
+    // console.log( req.body )
+    // res.send( req.body )
 
     try {
         const newDog = await Dog.create( req.body )
-        res.status(200).json( newDog )
+        // res.status(200).json( newDog )
+        res.redirect( '/dogs' )
     } catch (error) {
         res.status(500).json( { message: error.message } )
     }  
